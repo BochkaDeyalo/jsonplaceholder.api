@@ -21,7 +21,7 @@ func NewService(cfg *config.Config) *Service {
 	}
 }
 
-func (s *Service) CreatePost(request model.RequestBody) (*model.RequestBody, error) {
+func (s *Service) CreatePost(request model.RequestBody) (*model.ResponseBody, error) {
 	apiURL := s.config.APIURL
 	endpoint := "/posts"
 	url := apiURL + endpoint
@@ -37,5 +37,10 @@ func (s *Service) CreatePost(request model.RequestBody) (*model.RequestBody, err
 	}
 	defer resp.Body.Close()
 
-	return &request, nil
+	var response model.ResponseBody
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return nil, err
+	}
+
+	return &response, nil
 }
