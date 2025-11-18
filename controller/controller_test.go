@@ -28,10 +28,31 @@ func (m *MockApiCaller) CreatePost(request model.RequestBody) (*model.ResponseBo
 	return args.Get(0).(*model.ResponseBody), args.Error(1)
 }
 
+type MockLogger struct {
+	mock.Mock
+}
+
+func (m *MockLogger) Debug(msg string, args ...any) {
+	m.Called(msg, args)
+}
+
+func (m *MockLogger) Info(msg string, args ...any) {
+	m.Called(msg, args)
+}
+
+func (m *MockLogger) Warn(msg string, args ...any) {
+	m.Called(msg, args)
+}
+
+func (m *MockLogger) Error(msg string, args ...any) {
+	m.Called(msg, args)
+}
+
 func TestCreatePost_Success(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockApiCaller := new(MockApiCaller)
+	mockLogger := new(MockLogger)
 	expectedResponse := &model.ResponseBody{
 		UserID: 1,
 		ID:     101,
@@ -43,7 +64,10 @@ func TestCreatePost_Success(t *testing.T) {
 		return req.UserID == 1 && req.Title == "Test Post" && req.Body == "Test Body"
 	})).Return(expectedResponse, nil)
 
-	ctrl := controller.NewController(mockApiCaller)
+	mockLogger.On("Debug", mock.Anything, mock.Anything).Return()
+	mockLogger.On("Info", mock.Anything, mock.Anything).Return()
+
+	ctrl := controller.NewController(mockApiCaller, mockLogger)
 
 	requestBody := model.RequestBody{
 		UserID: 1,
@@ -78,7 +102,12 @@ func TestCreatePost_ValidationFailed(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockApiCaller := new(MockApiCaller)
-	ctrl := controller.NewController(mockApiCaller)
+	mockLogger := new(MockLogger)
+
+	mockLogger.On("Debug", mock.Anything, mock.Anything).Return()
+	mockLogger.On("Warn", mock.Anything, mock.Anything).Return()
+
+	ctrl := controller.NewController(mockApiCaller, mockLogger)
 
 	requestBody := model.RequestBody{
 		UserID: 1,
@@ -112,7 +141,12 @@ func TestCreatePost_ValidationFailed_EmptyBody(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockApiCaller := new(MockApiCaller)
-	ctrl := controller.NewController(mockApiCaller)
+	mockLogger := new(MockLogger)
+
+	mockLogger.On("Debug", mock.Anything, mock.Anything).Return()
+	mockLogger.On("Warn", mock.Anything, mock.Anything).Return()
+
+	ctrl := controller.NewController(mockApiCaller, mockLogger)
 
 	requestBody := model.RequestBody{
 		UserID: 1,
@@ -146,7 +180,12 @@ func TestCreatePost_ValidationFailed_InvalidUserID(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockApiCaller := new(MockApiCaller)
-	ctrl := controller.NewController(mockApiCaller)
+	mockLogger := new(MockLogger)
+
+	mockLogger.On("Debug", mock.Anything, mock.Anything).Return()
+	mockLogger.On("Warn", mock.Anything, mock.Anything).Return()
+
+	ctrl := controller.NewController(mockApiCaller, mockLogger)
 
 	requestBody := model.RequestBody{
 		UserID: 0,
@@ -180,12 +219,16 @@ func TestCreatePost_ExternalServiceError(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockApiCaller := new(MockApiCaller)
+	mockLogger := new(MockLogger)
 	serviceError := errors.New("external service unavailable")
 	mockApiCaller.On("CreatePost", mock.MatchedBy(func(req model.RequestBody) bool {
 		return req.UserID == 1 && req.Title == "Test Post" && req.Body == "Test Body"
 	})).Return(nil, serviceError)
 
-	ctrl := controller.NewController(mockApiCaller)
+	mockLogger.On("Debug", mock.Anything, mock.Anything).Return()
+	mockLogger.On("Error", mock.Anything, mock.Anything).Return()
+
+	ctrl := controller.NewController(mockApiCaller, mockLogger)
 
 	requestBody := model.RequestBody{
 		UserID: 1,
@@ -219,7 +262,11 @@ func TestCreatePost_InvalidJSON(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockApiCaller := new(MockApiCaller)
-	ctrl := controller.NewController(mockApiCaller)
+	mockLogger := new(MockLogger)
+
+	mockLogger.On("Warn", mock.Anything, mock.Anything).Return()
+
+	ctrl := controller.NewController(mockApiCaller, mockLogger)
 
 	req := httptest.NewRequest(http.MethodPost, "/post", bytes.NewBuffer([]byte("invalid json")))
 	req.Header.Set("Content-Type", "application/json")

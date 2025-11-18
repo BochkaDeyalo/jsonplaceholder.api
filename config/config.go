@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	APIURL string
-	PORT   string
+	LogLevel string `env:"LOG_LEVEL" default:"info"`
+	APIURL   string
+	PORT     string
 }
 
 func Load(path string) (*Config, error) {
