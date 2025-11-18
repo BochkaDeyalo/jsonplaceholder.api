@@ -9,12 +9,16 @@ import (
 	"github.com/BochkaDeyalo/jsonplaceholder.api/model"
 )
 
+type ApiCaller interface {
+	CreatePost(request model.RequestBody) (*model.ResponseBody, error)
+}
+
 type Service struct {
 	client *http.Client
 	config *config.Config
 }
 
-func NewService(cfg *config.Config) *Service {
+func NewService(cfg *config.Config) ApiCaller {
 	return &Service{
 		client: &http.Client{},
 		config: cfg,
