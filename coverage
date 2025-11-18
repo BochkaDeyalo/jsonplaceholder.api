@@ -1,0 +1,9 @@
+mode: set
+github.com/BochkaDeyalo/jsonplaceholder.api/controller/controller.go:18.61,23.2 1 1
+github.com/BochkaDeyalo/jsonplaceholder.api/controller/controller.go:25.50,27.51 2 1
+github.com/BochkaDeyalo/jsonplaceholder.api/controller/controller.go:27.51,30.3 2 1
+github.com/BochkaDeyalo/jsonplaceholder.api/controller/controller.go:32.2,32.53 1 1
+github.com/BochkaDeyalo/jsonplaceholder.api/controller/controller.go:32.53,35.3 2 1
+github.com/BochkaDeyalo/jsonplaceholder.api/controller/controller.go:37.2,38.16 2 1
+github.com/BochkaDeyalo/jsonplaceholder.api/controller/controller.go:38.16,41.3 2 1
+github.com/BochkaDeyalo/jsonplaceholder.api/controller/controller.go:43.2,43.36 1 1
