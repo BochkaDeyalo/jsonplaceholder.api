@@ -1,0 +1,228 @@
+basePath: /
+definitions:
+  apierror.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      details:
+        type: string
+      message:
+        type: string
+    type: object
+  model.RequestBody:
+    properties:
+      body:
+        minLength: 1
+        type: string
+      id:
+        minimum: 0
+        type: integer
+      title:
+        minLength: 1
+        type: string
+      userId:
+        minimum: 1
+        type: integer
+    required:
+    - body
+    - title
+    - userId
+    type: object
+  model.ResponseArrayBody:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/model.ResponseBody'
+        type: array
+    type: object
+  model.ResponseBody:
+    properties:
+      body:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      userId:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+  description: A REST API for managing posts using JSONPlaceholder external service
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: JSONPlaceholder API
+  version: "1.0"
+paths:
+  /posts:
+    get:
+      consumes:
+      - application/json
+      description: Get list of all posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseArrayBody'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/apierror.ErrorResponse'
+      summary: Get all posts
+      tags:
+      - posts
+    post:
+      consumes:
+      - application/json
+      description: Create a new post with userId, title and body
+      parameters:
+      - description: Post data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.RequestBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.ResponseBody'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.ErrorResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/apierror.ErrorResponse'
+      summary: Create a new post
+      tags:
+      - posts
+  /posts/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a post by its ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/apierror.ErrorResponse'
+      summary: Delete a post
+      tags:
+      - posts
+    get:
+      consumes:
+      - application/json
+      description: Get a specific post by its ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseBody'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/apierror.ErrorResponse'
+      summary: Get post by ID
+      tags:
+      - posts
+    patch:
+      consumes:
+      - application/json
+      description: Update specific fields of an existing post
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Post data (partial)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.RequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseBody'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.ErrorResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/apierror.ErrorResponse'
+      summary: Partially update a post
+      tags:
+      - posts
+    put:
+      consumes:
+      - application/json
+      description: Update an existing post with all fields
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Post data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.RequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseBody'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.ErrorResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/apierror.ErrorResponse'
+      summary: Update a post
+      tags:
+      - posts
+schemes:
+- http
+- https
+swagger: "2.0"

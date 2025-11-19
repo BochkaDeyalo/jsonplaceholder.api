@@ -25,6 +25,17 @@ func NewController(apiCaller service.ApiCaller, log logger.Logger) *Controller {
 	}
 }
 
+// CreatePost godoc
+// @Summary      Create a new post
+// @Description  Create a new post with userId, title and body
+// @Tags         posts
+// @Accept       json
+// @Produce      json
+// @Param        request  body      model.RequestBody  true  "Post data"
+// @Success      201      {object}  model.ResponseBody
+// @Failure      400      {object}  apierror.ErrorResponse
+// @Failure      502      {object}  apierror.ErrorResponse
+// @Router       /posts [post]
 func (pc *Controller) CreatePost(c *gin.Context) {
 	var request model.RequestBody
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -53,6 +64,15 @@ func (pc *Controller) CreatePost(c *gin.Context) {
 
 }
 
+// GetPosts godoc
+// @Summary      Get all posts
+// @Description  Get list of all posts
+// @Tags         posts
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  model.ResponseArrayBody
+// @Failure      502  {object}  apierror.ErrorResponse
+// @Router       /posts [get]
 func (pc *Controller) GetPosts(c *gin.Context) {
 	result, err := pc.ApiCaller.GetPosts()
 	if err != nil {
@@ -65,6 +85,16 @@ func (pc *Controller) GetPosts(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+// GetPostByID godoc
+// @Summary      Get post by ID
+// @Description  Get a specific post by its ID
+// @Tags         posts
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Post ID"
+// @Success      200  {object}  model.ResponseBody
+// @Failure      502  {object}  apierror.ErrorResponse
+// @Router       /posts/{id} [get]
 func (pc *Controller) GetPostByID(c *gin.Context) {
 	id := c.Param("id")
 
@@ -81,6 +111,18 @@ func (pc *Controller) GetPostByID(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+// UpdatePost godoc
+// @Summary      Update a post
+// @Description  Update an existing post with all fields
+// @Tags         posts
+// @Accept       json
+// @Produce      json
+// @Param        id       path      string             true  "Post ID"
+// @Param        request  body      model.RequestBody  true  "Post data"
+// @Success      200      {object}  model.ResponseBody
+// @Failure      400      {object}  apierror.ErrorResponse
+// @Failure      502      {object}  apierror.ErrorResponse
+// @Router       /posts/{id} [put]
 func (pc *Controller) UpdatePost(c *gin.Context) {
 	id := c.Param("id")
 
@@ -110,6 +152,18 @@ func (pc *Controller) UpdatePost(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+// PatchPost godoc
+// @Summary      Partially update a post
+// @Description  Update specific fields of an existing post
+// @Tags         posts
+// @Accept       json
+// @Produce      json
+// @Param        id       path      string             true  "Post ID"
+// @Param        request  body      model.RequestBody  true  "Post data (partial)"
+// @Success      200      {object}  model.ResponseBody
+// @Failure      400      {object}  apierror.ErrorResponse
+// @Failure      502      {object}  apierror.ErrorResponse
+// @Router       /posts/{id} [patch]
 func (pc *Controller) PatchPost(c *gin.Context) {
 	id := c.Param("id")
 
@@ -133,6 +187,16 @@ func (pc *Controller) PatchPost(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+// DeletePost godoc
+// @Summary      Delete a post
+// @Description  Delete a post by its ID
+// @Tags         posts
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Post ID"
+// @Success      204  "No Content"
+// @Failure      502  {object}  apierror.ErrorResponse
+// @Router       /posts/{id} [delete]
 func (pc *Controller) DeletePost(c *gin.Context) {
 	id := c.Param("id")
 
