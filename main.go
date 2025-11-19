@@ -24,6 +24,6 @@ func main() {
 
 	r.POST("/post", controller.CreatePost)
 	if err := r.Run(); err != nil {
-		log.Fatalf("failed to run server: %v", err)
+		logger.Error("failed to run server: %v", err)
 	}
 }
